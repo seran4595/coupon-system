@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coupon System - v2 (24MIS0579)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f9; }
+        .box { background: white; padding: 20px; border-radius: 8px; max-width: 500px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, button { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { background: #28a745; color: white; border: none; cursor: pointer; }
+        ul { list-style: none; padding: 0; }
+        li { background: #e9ecef; margin: 5px 0; padding: 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Coupon System - v2 (Add & Apply)</h2>
+        <h3>1. Create Coupon</h3>
+        <input type="text" id="code" placeholder="Coupon Code (e.g. SAVE20)">
+        <input type="number" id="discount" placeholder="Discount % (e.g. 20)">
+        <input type="date" id="expiry">
+        <button onclick="addCoupon()">Create Coupon</button>
+        <ul id="couponList"></ul>
+        <hr>
+        <h3>2. Apply Coupon</h3>
+        <input type="number" id="amount" placeholder="Order Amount (Rs.)">
+        <input type="text" id="applyCode" placeholder="Enter Coupon Code">
+        <button onclick="applyCoupon()">Apply Coupon</button>
+        <p id="applyResult"></p>
+    </div>
+    <script>
+        let coupons = [{ code: "WELCOME10", discount: 10, expiry: "2027-12-31" }];
+        function addCoupon() {
+            const code = document.getElementById('code').value.trim().toUpperCase();
+            const discount = document.getElementById('discount').value;
+            const expiry = document.getElementById('expiry').value;
+            if (!code || !discount || !expiry) return alert("Fill all fields!");
+            coupons.push({ code, discount: Number(discount), expiry });
+            render();
+        }
+        function applyCoupon() {
+            const amount = Number(document.getElementById('amount').value);
+            const code = document.getElementById('applyCode').value.trim().toUpperCase();
+            const found = coupons.find(c => c.code === code);
+            const res = document.getElementById('applyResult');
+            if (!found) {
+                res.innerText = "Coupon not found!";
+                res.style.color = "red";
+            } else {
+                const finalPrice = amount - (amount * found.discount / 100);
+                res.innerText = `Coupon Applied! Discount: ${found.discount}%. Final Price: Rs. ${finalPrice}`;
+                res.style.color = "green";
+            }
+        }
+        function render() {
+            document.getElementById('couponList').innerHTML = coupons.map(c => `<li><b>${c.code}</b> - ${c.discount}% off (Exp: ${c.expiry})</li>`).join('');
+        }
+        render();
+    </script>
+</body>
+</html>
